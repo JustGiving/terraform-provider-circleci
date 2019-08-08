@@ -34,6 +34,7 @@ func Provider() terraform.ResourceProvider {
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
+			"circleci_project": resourceCircleCIProject(),
 			"circleci_environment_variable": resourceCircleCIEnvironmentVariable(),
 		},
 		ConfigureFunc: providerConfigure,

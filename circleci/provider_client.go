@@ -30,6 +30,14 @@ func NewConfig(token, vscType, organization, baseURL string) (*ProviderClient, e
 	}, nil
 }
 
+func (pv *ProviderClient) GetProject(projectName string) (*circleciapi.Project, error) {
+	return pv.client.GetProject(pv.organization, projectName)
+}
+
+func (pv *ProviderClient) FollowProject(projectName string) (*circleciapi.Project, error) {
+	return pv.client.FollowProject(pv.vcsType, pv.organization, projectName)
+}
+
 // GetEnvVar get the environment variable with given name
 // It returns an empty structure if no environment variable exists with that name
 func (pv *ProviderClient) GetEnvVar(projectName, envVarName string) (*circleciapi.EnvVar, error) {

@@ -1,7 +1,7 @@
 
 VERSION=v0.0.1
 ARCH=amd64
-OS=linux
+OS=darwin
 
 TARGET_BINARY=terraform-provider-circleci_$(VERSION)
 

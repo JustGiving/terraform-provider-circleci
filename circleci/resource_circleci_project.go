@@ -2,6 +2,7 @@ package circleci
 
 import (
 	"time"
+	"errors"
 
 	"github.com/hashicorp/terraform/helper/schema"
 )
@@ -55,6 +56,10 @@ func resourceCircleCIProjectRead(d *schema.ResourceData, m interface{}) error {
 	project, err := providerClient.GetProject(projectName)
 	if err != nil {
 		return err
+	}
+
+	if project == nil {
+		return errors.New("Invalid response from CircleCI API")
 	}
 
 	if err := d.Set("name", project.Reponame); err != nil {

@@ -1,5 +1,5 @@
 
-VERSION=v0.0.1
+VERSION=v0.3.2
 ARCH=amd64
 OS=darwin
 

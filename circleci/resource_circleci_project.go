@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/hashicorp/terraform/helper/schema"
+	circleciapi "github.com/jszwedko/go-circleci"
 )
 
 func resourceCircleCIProject() *schema.Resource {
@@ -40,7 +41,16 @@ func resourceCircleCIProjectCreate(d *schema.ResourceData, m interface{}) error 
 	projectName := d.Get("name").(string)
 
 	if _, err := providerClient.FollowProject(projectName); err != nil {
-		return err
+		apiErr := &circleciapi.APIError{}
+
+		if errors.As(err, &apiErr) && apiErr.HTTPStatusCode == 400 && apiErr.Message == "Branch not found" {
+			// The API responds with "400: Branch not found" if the GitHub repository for the project is empty.
+			// However, it still follows the project and the pipeline will kick off after the first commit with the config file gets pushed.
+			//
+			// Therefore, we can ignore this error response here.
+		} else {
+			return err
+		}
 	}
 
 	d.SetId(projectName)

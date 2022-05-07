@@ -73,7 +73,12 @@ func resourceCircleCIProjectCreate(d *schema.ResourceData, m interface{}) error 
 		return fmt.Errorf("error following project: %w", err)
 	}
 
-	d.SetId(projectName)
+	project, err := c.GetProject(projectName)
+	if err != nil {
+		return err
+	}
+
+	d.SetId(project.Id)
 
 	return resourceCircleCIProjectRead(d, m)
 }

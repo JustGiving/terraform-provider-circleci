@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 
 	"github.com/CircleCI-Public/circleci-cli/api"
 	"github.com/CircleCI-Public/circleci-cli/settings"
@@ -17,6 +18,7 @@ import (
 type Client struct {
 	contexts     *api.ContextRestClient
 	rest         *rest.Client
+	v1           *rest.Client
 	vcs          string
 	organization string
 }
@@ -51,6 +53,7 @@ func New(config Config) (*Client, error) {
 
 	return &Client{
 		rest:     rest.New(rootURL, u.Path, config.Token),
+		v1:       rest.New(rootURL, strings.Replace(u.Path, "v2", "v1.1", 1), config.Token),
 		contexts: contexts,
 
 		vcs:          config.VCS,

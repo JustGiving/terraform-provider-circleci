@@ -1,50 +1,43 @@
 # CircleCI Terraform provider
 
-[![Build Status](https://circleci.com/gh/mrolla/terraform-provider-circleci.svg?style=shield)](https://circleci.com/gh/mrolla/terraform-provider-circleci/tree/master)
-[![Go Report Card](https://goreportcard.com/badge/github.com/mrolla/terraform-provider-circleci)](https://goreportcard.com/badge/github.com/mrolla/terraform-provider-circleci)
+## JustGiving-specific changes
 
-- Website: https://www.terraform.io
-- [![Gitter chat](https://badges.gitter.im/hashicorp-terraform/Lobby.png)](https://gitter.im/hashicorp-terraform/Lobby)
-- Mailing list: [Google Groups](http://groups.google.com/group/terraform-tool)
-
-<img src="https://cdn.rawgit.com/hashicorp/terraform-website/master/content/source/assets/images/logo-hashicorp.svg" width="600px">
+ - Added a `circleci_project` resource that follows a project on creation (enabling builds) and provides the project ID.
+ - Added an example Terraform project using the provider in [`./example`](./example/).
+ - Removed pipeline files
 
 ## Requirements
 
-- [Terraform][terraform] 0.12.x (it has also been tested with version 0.11+)
-- [Go][go] 1.11+ (to build the provider plugin)
+- [Terraform][terraform] 1.x
+- [Go][go] 1.17+ (to build the provider plugin)
 
-## Using the provider
+## Local testing
 
-#### Download a release
-
-Download the latest release for your OS from the [release page][release page]
-and follow the instructions to [install third party plugins][third party plugins].
-
-#### Build from sources
-
-To build the project you can use `make`. This will place a binary in your `$GOBIN` directory. Copy the binary to the [Terraform plugin directory][third party plugins].
-
-After placing it into your plugins directory, run `terraform init` to initialize it.
-
-## Example:
+This will build the provider and output the binary in `~/.terraform.d/plugins/terraform.justgiving.com/justgiving/circleci/0.0.1/darwin_amd64/terraform-provider-circleci_v0.0.1`, where any Terraform stack on the local machine will be able to be loaded if required with:
 
 ```hcl
-provider "circleci" {
-  api_token    = "${file("circleci_token")}"
-  vcs_type     = "github"
-  organization = "my_org"
-}
-
-resource "circleci_environment_variable" "from_terraform" {
-  project = "mySuperProject"
-  name    = "from_terraform"
-  value   = "the secret"
+...
+terraform {
+  required_providers {
+    circleci = {
+      source = "terraform.justgiving.com/justgiving/circleci"
+      version = "0.0.1"
+    }
+  }
 }
 ```
 
-[install plugin]: https://www.terraform.io/docs/plugins/basics.html#installing-a-plugin
-[third party plugins]: https://www.terraform.io/docs/configuration/providers.html#third-party-plugins
-[terraform]: https://www.terraform.io/downloads.html
-[go]: https://golang.org/doc/install
-[release page]: https://github.com/mrolla/terraform-provider-circleci/releases
+## Publishing for service-generator
+
+Build a new version for macOS and Linux (outputs the binaries in `./build`):
+
+```bash
+CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -mod=vendor -ldflags="-s -w" -a -o build/terraform-provider-circleci-darwin-amd64
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -mod=vendor -ldflags="-s -w" -a -o build/terraform-provider-circleci-linux-amd64
+```
+
+Create a new release in the GitHub repository and upload the binaries:
+
+```bash
+gh release create "v0.4.0" -t '' -n '' build/*
+```

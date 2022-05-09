@@ -39,5 +39,6 @@ CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -mod=vendor -ldflags="-s -w" -a -
 Create a new release in the GitHub repository and upload the binaries:
 
 ```bash
-gh release create "v0.4.0" -t '' -n '' build/*
+version="x.y.z"
+gh release create "v$version" -t '' -n '' build/*
 ```

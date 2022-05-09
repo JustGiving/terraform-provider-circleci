@@ -40,5 +40,5 @@ Create a new release in the GitHub repository and upload the binaries:
 
 ```bash
 version="x.y.z"
-gh release create "v$version" -t '' -n '' build/*
+gh release create "v$version" -t "v$version" -n '' build/*
 ```

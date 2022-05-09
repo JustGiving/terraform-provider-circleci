@@ -5,6 +5,7 @@
  - Added a `circleci_project` resource that follows a project on creation (enabling builds) and provides the project ID.
  - Added an example Terraform project using the provider in [`./example`](./example/).
  - Removed pipeline files
+ - Increased the timeouts on the HTTP client
 
 ## Requirements
 
@@ -12,6 +13,10 @@
 - [Go][go] 1.17+ (to build the provider plugin)
 
 ## Local testing
+
+```
+go build -mod=vendor -ldflags="-s -w" -o ~/.terraform.d/plugins/terraform.justgiving.com/justgiving/circleci/0.0.1/darwin_amd64/terraform-provider-circleci_v0.0.1
+```
 
 This will build the provider and output the binary in `~/.terraform.d/plugins/terraform.justgiving.com/justgiving/circleci/0.0.1/darwin_amd64/terraform-provider-circleci_v0.0.1`, where any Terraform stack on the local machine will be able to be loaded if required with:
 
